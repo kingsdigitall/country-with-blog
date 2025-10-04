@@ -11,7 +11,7 @@ async function getSubdomainData() {
     const proto: any = headersList.get("x-forwarded-proto") || "http";
     const host = headersList.get("host");
     const baseUrl = `${proto}://${host}`;
-    const response = await fetch(`http://localhost:3000/api/subdomains`, {
+    const response = await fetch(`${baseUrl}/api/subdomains`, {
       cache: 'no-store'
     });
     const data = await response.json();
