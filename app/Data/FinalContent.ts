@@ -1,4 +1,5 @@
 import rawSubdomainData from "@/components/Content/subDomainUrlContent.json";
+import rawStateData from "@/components/Content/subDomainState.json";
 
 // Adjust path if needed
 export interface SubdomainNeedsItem {
@@ -99,13 +100,23 @@ const sanitizeSubdomain = (data: any): SubdomainDataItem => ({
   address: data?.address || "",
 });
 
-// Transform and sanitize every entry
-const subdomainData: SubdomainDataMap = Object.entries(
+// Transform and sanitize every entry from both URL content and state content
+const urlSubdomainData: SubdomainDataMap = Object.entries(
   rawSubdomainData || {},
 ).reduce((acc, [key, value]) => {
-  acc[key] = sanitizeSubdomain(value) ;
+  acc[key] = sanitizeSubdomain(value);
   return acc;
 }, {} as SubdomainDataMap);
+
+const stateSubdomainData: SubdomainDataMap = Object.entries(
+  rawStateData || {},
+).reduce((acc, [key, value]) => {
+  acc[key] = sanitizeSubdomain(value);
+  return acc;
+}, {} as SubdomainDataMap);
+
+// Merge both datasets, with state data taking precedence
+const subdomainData: SubdomainDataMap = { ...urlSubdomainData, ...stateSubdomainData };
 
 const subdomainContent: {
   subdomainData: SubdomainDataMap;

@@ -7,17 +7,26 @@ export const revalidate = 0;
 
 export async function GET(request: Request) {
   try {
-    const filePath = join(process.cwd(), 'components', 'Content', 'subDomainUrlContent.json');
-    const fileData = readFileSync(filePath, 'utf-8');
-    const subdomainsObject = JSON.parse(fileData);
+    // Read subDomainUrlContent.json
+    const urlContentPath = join(process.cwd(), 'components', 'Content', 'subDomainUrlContent.json');
+    const urlContentData = readFileSync(urlContentPath, 'utf-8');
+    const urlContentObject = JSON.parse(urlContentData);
+
+    // Read subDomainState.json
+    const stateContentPath = join(process.cwd(), 'components', 'Content', 'subDomainState.json');
+    const stateContentData = readFileSync(stateContentPath, 'utf-8');
+    const stateContentObject = JSON.parse(stateContentData);
+
+    // Merge both objects into a final JSON
+    const finalJsonObject = {  ...stateContentObject,...urlContentObject };
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayStr = today.toISOString().split('T')[0];
 
     // Convert object to array and apply date filter
-    const subdomainsArray = Object.keys(subdomainsObject).map((key) => {
-      const item = subdomainsObject[key] || {};
+    const subdomainsArray = Object.keys(finalJsonObject).map((key) => {
+      const item = finalJsonObject[key] || {};
       // Ensure slug present
       if (!item.slug) {
         item.slug = key;
@@ -83,5 +92,3 @@ export async function GET(request: Request) {
     );
   }
 }
-
-
